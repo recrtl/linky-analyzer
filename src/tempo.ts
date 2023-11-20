@@ -47,25 +47,34 @@ export class tempo {
     RunModel(input: ModelInput): ModelResult {
         input.Readings.forEach(x => this.countReading(x));
 
+        const subscription = this.subPrice(input.Power)
         const totalBlueHC = priceBlueHC * this.kwhBlueHC
         const totalBlueHP = priceBlueHP * this.kwhBlueHP
         const totalWhiteHC = priceWhiteHC * this.kwhWhiteHC
         const totalWhiteHP = priceWhiteHP * this.kwhWhiteHP
         const totalRedHC = priceRedHC * this.kwhRedHC
         const totalRedHP = priceRedHP * this.kwhRedHP
+        const total = totalBlueHC + totalBlueHP + totalWhiteHC + totalWhiteHP + totalRedHC + totalRedHP + subscription
 
+        const kwhTotal = this.kwhBlueHC + this.kwhBlueHP + this.kwhWhiteHC + this.kwhWhiteHP + this.kwhRedHC + this.kwhRedHP
         return {
             Name: 'EDF tempo',
-            Cost: totalBlueHC + totalBlueHP + totalWhiteHC + totalWhiteHP + totalRedHC + totalRedHP + this.subPrice(input.Power),
+            Cost: total,
             Description: `
-            * Abonnement ${input.Power}kVA: ${this.subPrice(input.Power)}
-            <br/>* Total HC bleues: ${this.kwhBlueHC.toFixed(0)}kWh x ${priceBlueHC}€ = ${totalBlueHC.toFixed(2)}€
-            <br/>* Total HP bleues: ${this.kwhBlueHP.toFixed(0)}kWh x ${priceBlueHP}€ = ${totalBlueHP.toFixed(2)}€
-            <br/>* Total HC blanches: ${this.kwhWhiteHC.toFixed(0)}kWh x ${priceWhiteHC}€ = ${totalWhiteHC.toFixed(2)}€
-            <br/>* Total HP blanches: ${this.kwhWhiteHP.toFixed(0)}kWh x ${priceWhiteHP}€ = ${totalWhiteHP.toFixed(2)}€
-            <br/>* Total HC rouges: ${this.kwhRedHC.toFixed(0)}kWh x ${priceRedHC}€ = ${totalRedHC.toFixed(2)}€
-            <br/>* Total HP rouges: ${this.kwhRedHP.toFixed(0)}kWh x ${priceRedHP}€ = ${totalRedHP.toFixed(2)}€
-            `
+| Libellé                      | Heures | Jour  | Puissance consommée              | Prix kwH         | Total                       |
+|------------------------------|--------|-------|----------------------------------|------------------|-----------------------------|
+| Total                        | HC     | Bleu  | ${this.kwhBlueHC.toFixed(0)}kWh  | ${priceBlueHC}€  | ${totalBlueHC.toFixed(2)}€  |
+| Total                        | HP     | Bleu  | ${this.kwhBlueHP.toFixed(0)}kWh  | ${priceBlueHP}€  | ${totalBlueHP.toFixed(2)}€  |
+| Total                        | HC     | Blanc | ${this.kwhWhiteHC.toFixed(0)}kWh | ${priceWhiteHC}€ | ${totalWhiteHC.toFixed(2)}€ |
+| Total                        | HP     | Blanc | ${this.kwhWhiteHP.toFixed(0)}kWh | ${priceWhiteHP}€ | ${totalWhiteHP.toFixed(2)}€ |
+| Total                        | HC     | Rouge | ${this.kwhRedHC.toFixed(0)}kWh   | ${priceRedHC}€   | ${totalRedHC.toFixed(2)}€   |
+| Total                        | HP     | Rouge | ${this.kwhRedHP.toFixed(0)}kWh   | ${priceRedHP}€   | ${totalRedHP.toFixed(2)}€   |
+| Abonnement ${input.Power}kVA |        |       |                                  |                  | ${subscription.toFixed(2)}€ |
+| Total                        |        |       | ${kwhTotal.toFixed(0)}kWh        |                  | ${total.toFixed(2)}€        |
+<br/>
+_Les Heures creuses sont considérées de **22h à 6h**._
+_[Détail des tarifs.](https://particulier.edf.fr/content/dam/2-Actifs/Documents/Offres/Grille_prix_Tarif_Bleu.pdf)_
+`
         }
     }
 

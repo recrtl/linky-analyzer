@@ -56,11 +56,12 @@ function displayResults(results) {
         </thead>
         <tbody>`;
     for (const result of results) {
+        const description = marked.parse(result.Description);
         html += `
             <tr>
                 <td>${result.Name}</td>
                 <td>${result.Cost.toFixed(0)}€</td>
-                <td>${result.Description}</td>
+                <td>${description}</td>
             </tr>
             `;
     }

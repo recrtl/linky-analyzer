@@ -19,6 +19,7 @@
   "dependencies": {
     "commonjs": "^0.0.1",
     "csv-parse": "^5.5.2",
+    "marked": "^10.0.0",
     "moment": "^2.29.4"
   }
 }

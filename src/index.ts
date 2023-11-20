@@ -3,6 +3,11 @@
 import { tempo } from "./tempo.js";
 import { total_online } from "./total_online.js";
 
+interface imarked {
+    parse(markdown: string): string
+}
+declare var marked: imarked;
+
 const inputElement = document.getElementById("formFile");
 inputElement.addEventListener("change", handleFiles, false);
 
@@ -48,6 +53,7 @@ interface Model {
 }
 
 function displayResults(results: Array<ModelResult>) {
+
     let html = `
         <table>
         <thead>
@@ -60,11 +66,13 @@ function displayResults(results: Array<ModelResult>) {
         <tbody>`
 
     for (const result of results) {
+        const description = marked.parse(result.Description)
+
         html += `
             <tr>
                 <td>${result.Name}</td>
                 <td>${result.Cost.toFixed(0)}€</td>
-                <td>${result.Description}</td>
+                <td>${description}</td>
             </tr>
             `
     }
