@@ -54,9 +54,9 @@ _[Détail des tarifs.](https://particulier.edf.fr/content/dam/2-Actifs/Documents
     }
 
     countReading(reading: Reading) {
-        const dateKey = reading.date.toISOString().split('T')[0]
+        const dateKey = reading.startDate.toISOString().split('T')[0]
 
-        const hours = reading.date.getHours()
+        const hours = reading.startDate.getHours()
         const HC = hours < 8 || (hours >= 13 && hours < 18) || hours >= 20
 
         const kwh = reading.wattsHour / 1000

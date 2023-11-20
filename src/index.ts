@@ -25,8 +25,9 @@ async function handleFiles() {
         Readings: []
     }
 
-    for (const line of lines) {
-        const columns = line.split(';')
+    let previousDate: Date
+    for (let i = 0; i < lines.length; i++) {
+        const columns = lines[i].split(';')
         if (columns.length != 2) continue
 
         const dateRaw = columns[0]
@@ -37,10 +38,16 @@ async function handleFiles() {
             watts = 0 // todo add warning for missing data
         }
 
-        modelInput.Readings.push({
-            date: date,
-            wattsHour: watts / 2, // 30 minutes slots
-        })
+        if (i != 0) {
+            const durationHours = (date.getTime() - previousDate.getTime()) / (1000 * 60 * 60)
+            modelInput.Readings.push({
+                startDate: previousDate,
+                endDate: date,
+                wattsHour: watts * durationHours,
+            })
+        }
+
+        previousDate = date
     }
 
     const results = new Array<ModelResult>()

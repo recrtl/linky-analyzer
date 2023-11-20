@@ -1,5 +1,6 @@
 type Reading = {
-    date: Date
+    startDate: Date
+    endDate: Date
     wattsHour: number
 }
 
