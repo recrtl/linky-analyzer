@@ -27,6 +27,7 @@ function onFormChange() {
             Power: parseFloat(getFormPower().value),
             Readings: []
         };
+        const missingDates = new Set();
         let previousDate;
         for (let i = 0; i < lines.length; i++) {
             const columns = lines[i].split(';');
@@ -36,7 +37,8 @@ function onFormChange() {
             const date = new Date(dateRaw);
             let watts = parseInt(columns[1]);
             if (isNaN(watts)) {
-                watts = 0; // todo add warning for missing data
+                watts = 0;
+                missingDates.add(date.toISOString().split('T')[0]);
             }
             if (i != 0) {
                 const durationHours = (date.getTime() - previousDate.getTime()) / (1000 * 60 * 60);
@@ -48,12 +50,26 @@ function onFormChange() {
             }
             previousDate = date;
         }
+        displayInputData(modelInput, missingDates);
         const results = new Array();
         results.push(new tempo().RunModel(modelInput));
         results.push(new zen_flex().RunModel(modelInput));
         results.push(new total_online().RunModel(modelInput));
         displayResults(results);
     });
+}
+function displayInputData(modelInput, missingDates) {
+    let description = `
+Votre fichier couvre du ${modelInput.Readings[0].startDate.toLocaleDateString()} au ${modelInput.Readings.slice(-1)[0].startDate.toLocaleDateString()}.
+    `;
+    if (missingDates.size > 0) {
+        description += `
+
+**Note:** les dates suivantes sont manquantes du fichier: ${Array.from(missingDates).join(', ')}`;
+    }
+    let html = marked.parse(description);
+    const div = document.getElementById('input');
+    div.innerHTML = html;
 }
 function displayResults(results) {
     let html = `

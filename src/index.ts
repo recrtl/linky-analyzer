@@ -28,6 +28,8 @@ async function onFormChange() {
         Readings: []
     }
 
+    const missingDates = new Set<string>()
+
     let previousDate: Date
     for (let i = 0; i < lines.length; i++) {
         const columns = lines[i].split(';')
@@ -38,7 +40,8 @@ async function onFormChange() {
 
         let watts = parseInt(columns[1])
         if (isNaN(watts)) {
-            watts = 0 // todo add warning for missing data
+            watts = 0
+            missingDates.add(date.toISOString().split('T')[0])
         }
 
         if (i != 0) {
@@ -53,6 +56,8 @@ async function onFormChange() {
         previousDate = date
     }
 
+    displayInputData(modelInput, missingDates)
+
     const results = new Array<ModelResult>()
     results.push(new tempo().RunModel(modelInput))
     results.push(new zen_flex().RunModel(modelInput))
@@ -64,8 +69,24 @@ interface Model {
     RunModel(input: ModelInput): ModelResult
 }
 
-function displayResults(results: Array<ModelResult>) {
+function displayInputData(modelInput: ModelInput, missingDates: Set<string>) {
+    let description = `
+Votre fichier couvre du ${modelInput.Readings[0].startDate.toLocaleDateString()} au ${modelInput.Readings.slice(-1)[0].startDate.toLocaleDateString()}.
+    `
 
+    if (missingDates.size > 0) {
+        description += `
+
+**Note:** les dates suivantes sont manquantes du fichier: ${Array.from(missingDates).join(', ')}`
+    }
+
+    let html = marked.parse(description)
+
+    const div = document.getElementById('input')
+    div.innerHTML = html
+}
+
+function displayResults(results: Array<ModelResult>) {
     let html = `
         <table class="table table-striped table-bordered">
         <thead>
@@ -96,4 +117,3 @@ function displayResults(results: Array<ModelResult>) {
     const div = document.getElementById('output')
     div.innerHTML = html
 }
-
