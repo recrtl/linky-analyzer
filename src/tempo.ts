@@ -26,6 +26,9 @@ function parseSeason(input: string) {
 }
 
 export class tempo {
+    Name(): string {
+        return 'EDF tempo'
+    }
 
     GetKWPrice(date: Date): number {
         const dateKey = date.toISOString().split('T')[0]
@@ -35,14 +38,13 @@ export class tempo {
 
         switch (tempoColorByDay[dateKey]) {
             case tempoColor.Blue:
-                return HC ? 10.56 : 13.69
+                return HC ? 0.1056 : 0.1369
             case tempoColor.White:
-                return HC ? 12.46 : 16.54
+                return HC ? 0.1246 : 0.1654
             case tempoColor.Red:
-                return HC ? 13.28 : 73.24
+                return HC ? 0.1328 : 0.7324
         }
     }
-
 }
 
 // C/C from https://www.services-rte.com/cms/open_data/v1/tempo?season=2023-2024

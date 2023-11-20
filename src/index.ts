@@ -1,10 +1,11 @@
 /// <reference path="tempo.ts" />
 
 import { tempo } from "./tempo.js";
+import { total_online } from "./total_online.js";
 
 interface Row {
     date: Date;
-    watts: number;
+    wattsHour: number;
 }
 
 const inputElement = document.getElementById("formFile");
@@ -26,23 +27,73 @@ async function handleFiles() {
         const dateRaw = columns[0]
         const date = new Date(dateRaw)
 
+        let watts = parseInt(columns[1])
+        if (isNaN(watts)) {
+            watts = 0 // todo add warning for missing data
+        }
+
         rows.push({
             date: date,
-            watts: parseInt(columns[1])
+            wattsHour: watts / 2, // 30 minutes slots
         })
     }
 
     console.log(rows);
 
-    const t = new tempo()
+    const results = new Array<ModelResult>()
+    results.push(computeModel(new tempo(), rows))
+    results.push(computeModel(new total_online(), rows))
 
-    let tempoTotal = 0
-    for (const row of rows) {
-        if (Number.isNaN(row.watts)) {
-            console.log(row)
-        }
-        tempoTotal += row.watts * t.GetKWPrice(row.date) / 1000
-        // console.log(tempoTotal)
-    }
-    console.log(tempoTotal)
+    displayResults(results)
 }
+
+type ModelResult = {
+    Name: string
+    Cost: number
+}
+
+interface Model {
+    Name(): string
+    GetKWPrice(date: Date): number
+}
+
+function computeModel(model: Model, rows: Array<Row>): ModelResult {
+    let total = 0
+    for (const row of rows) {
+        total += row.wattsHour * model.GetKWPrice(row.date) / 1000
+    }
+
+    return {
+        Name: model.Name(),
+        Cost: total,
+    }
+}
+
+function displayResults(results: Array<ModelResult>) {
+    let html = `
+        <table>
+        <thead>
+            <tr>
+                <th data-field="name" data-sortable="true">Nom</th>
+                <th data-field="price" data-sortable="true">Prix</th>
+            </tr>
+        </thead>
+        <tbody>`
+
+    for (const result of results) {
+        html += `
+            <tr>
+                <td>${result.Name}</td>
+                <td>${result.Cost.toFixed(0)}€</td>
+            </tr>
+            `
+    }
+
+    html += `
+        </tbody>
+        </table>`
+
+    const div = document.getElementById('output')
+    div.innerHTML = html
+}
+
