@@ -64,12 +64,12 @@ interface Model {
 function displayResults(results: Array<ModelResult>) {
 
     let html = `
-        <table>
+        <table class="table">
         <thead>
             <tr>
-                <th data-field="name" data-sortable="true">Nom</th>
-                <th data-field="price" data-sortable="true">Prix</th>
-                <th data-field="price" data-sortable="true">Détails</th>
+                <th data-field="name">Nom</th>
+                <th data-field="price">Prix</th>
+                <th data-field="price">Détails</th>
             </tr>
         </thead>
         <tbody>`
