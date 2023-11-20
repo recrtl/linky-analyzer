@@ -11,17 +11,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import { tempo } from "./tempo.js";
 import { total_online } from "./total_online.js";
 import { zen_flex } from "./zen_flex.js";
-const inputElement = document.getElementById("formFile");
-inputElement.addEventListener("change", handleFiles, false);
-function handleFiles() {
+function getFormFile() { return document.getElementById("formFile"); }
+function getFormPower() { return document.getElementById("formPower"); }
+getFormFile().addEventListener("change", onFormChange, false);
+getFormPower().addEventListener("change", onFormChange, false);
+function onFormChange() {
     return __awaiter(this, void 0, void 0, function* () {
-        const files = this.files; /* now you can work with the file list */
-        console.log(files);
+        const files = getFormFile().files; /* now you can work with the file list */
+        if (files.length == 0)
+            return;
         const content = yield files[0].text();
         // skip 3 first header lines
         const lines = content.split('\n').slice(3);
         const modelInput = {
-            Power: 6,
+            Power: parseFloat(getFormPower().value),
             Readings: []
         };
         let previousDate;

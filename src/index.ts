@@ -9,19 +9,22 @@ interface imarked {
 }
 declare var marked: imarked;
 
-const inputElement = document.getElementById("formFile");
-inputElement.addEventListener("change", handleFiles, false);
+function getFormFile(): HTMLInputElement { return <HTMLInputElement>document.getElementById("formFile") }
+function getFormPower(): HTMLInputElement { return <HTMLInputElement>document.getElementById("formPower") }
 
-async function handleFiles() {
-    const files: FileList = this.files; /* now you can work with the file list */
-    console.log(files);
+getFormFile().addEventListener("change", onFormChange, false);
+getFormPower().addEventListener("change", onFormChange, false);
+
+async function onFormChange() {
+    const files: FileList = getFormFile().files; /* now you can work with the file list */
+    if (files.length == 0) return
 
     const content = await files[0].text()
     // skip 3 first header lines
     const lines = content.split('\n').slice(3)
 
     const modelInput: ModelInput = {
-        Power: 6, // todo
+        Power: parseFloat(getFormPower().value),
         Readings: []
     }
 
