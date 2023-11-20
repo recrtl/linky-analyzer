@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { tempo } from "./tempo.js";
 import { total_online } from "./total_online.js";
+import { zen_flex } from "./zen_flex.js";
 const inputElement = document.getElementById("formFile");
 inputElement.addEventListener("change", handleFiles, false);
 function handleFiles() {
@@ -40,6 +41,7 @@ function handleFiles() {
         }
         const results = new Array();
         results.push(new tempo().RunModel(modelInput));
+        results.push(new zen_flex().RunModel(modelInput));
         results.push(new total_online().RunModel(modelInput));
         displayResults(results);
     });

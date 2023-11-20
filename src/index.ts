@@ -2,6 +2,7 @@
 
 import { tempo } from "./tempo.js";
 import { total_online } from "./total_online.js";
+import { zen_flex } from "./zen_flex.js";
 
 interface imarked {
     parse(markdown: string): string
@@ -44,6 +45,7 @@ async function handleFiles() {
 
     const results = new Array<ModelResult>()
     results.push(new tempo().RunModel(modelInput))
+    results.push(new zen_flex().RunModel(modelInput))
     results.push(new total_online().RunModel(modelInput))
     displayResults(results)
 }

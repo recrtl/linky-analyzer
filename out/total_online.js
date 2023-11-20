@@ -7,7 +7,7 @@ export class total_online {
         }
         return {
             Name: 'Total offre online',
-            Cost: total + this.subPrice(input.Power),
+            Cost: total + this.subPrice(input.Power) * 12,
             Description: ''
         };
     }
