@@ -19,7 +19,10 @@ function handleFiles() {
         const content = yield files[0].text();
         // skip 3 first header lines
         const lines = content.split('\n').slice(3);
-        let rows = [];
+        const modelInput = {
+            Power: 6,
+            Readings: []
+        };
         for (const line of lines) {
             const columns = line.split(';');
             if (columns.length != 2)
@@ -30,27 +33,16 @@ function handleFiles() {
             if (isNaN(watts)) {
                 watts = 0; // todo add warning for missing data
             }
-            rows.push({
+            modelInput.Readings.push({
                 date: date,
                 wattsHour: watts / 2, // 30 minutes slots
             });
         }
-        console.log(rows);
         const results = new Array();
-        results.push(computeModel(new tempo(), rows));
-        results.push(computeModel(new total_online(), rows));
+        results.push(new tempo().RunModel(modelInput));
+        results.push(new total_online().RunModel(modelInput));
         displayResults(results);
     });
-}
-function computeModel(model, rows) {
-    let total = 0;
-    for (const row of rows) {
-        total += row.wattsHour * model.GetKWPrice(row.date) / 1000;
-    }
-    return {
-        Name: model.Name(),
-        Cost: total,
-    };
 }
 function displayResults(results) {
     let html = `

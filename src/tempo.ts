@@ -30,7 +30,31 @@ export class tempo {
         return 'EDF tempo'
     }
 
-    GetKWPrice(date: Date): number {
+    RunModel(input: ModelInput): ModelResult {
+        let total = 0
+        for (const row of input.Readings) {
+            total += row.wattsHour * this.getKWPrice(row.date) / 1000
+        }
+
+        return {
+            Name: 'EDF tempo',
+            Cost: total + this.subPrice(input.Power),
+            Description: ''
+        }
+    }
+
+    subPrice(power: number): number {
+        if (power <= 6) return 12.80
+        if (power <= 9) return 16.00
+        if (power <= 12) return 19.29
+        if (power <= 15) return 22.30
+        if (power <= 18) return 25.29
+        if (power <= 30) return 38.13
+        if (power <= 36) return 44.28
+        return NaN
+    }
+
+    getKWPrice(date: Date): number {
         const dateKey = date.toISOString().split('T')[0]
 
         const hours = date.getHours()
