@@ -51,6 +51,7 @@ function displayResults(results) {
             <tr>
                 <th data-field="name" data-sortable="true">Nom</th>
                 <th data-field="price" data-sortable="true">Prix</th>
+                <th data-field="price" data-sortable="true">Détails</th>
             </tr>
         </thead>
         <tbody>`;
@@ -59,6 +60,7 @@ function displayResults(results) {
             <tr>
                 <td>${result.Name}</td>
                 <td>${result.Cost.toFixed(0)}€</td>
+                <td>${result.Description}</td>
             </tr>
             `;
     }

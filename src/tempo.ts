@@ -25,21 +25,47 @@ function parseSeason(input: string) {
     }
 }
 
+const priceBlueHC = 0.1056
+const priceBlueHP = 0.1369
+const priceWhiteHC = 0.1246
+const priceWhiteHP = 0.1654
+const priceRedHC = 0.1328
+const priceRedHP = 0.7324
+
 export class tempo {
+    kwhBlueHC: number = 0
+    kwhBlueHP: number = 0
+    kwhWhiteHC: number = 0
+    kwhWhiteHP: number = 0
+    kwhRedHC: number = 0
+    kwhRedHP: number = 0
+
     Name(): string {
         return 'EDF tempo'
     }
 
     RunModel(input: ModelInput): ModelResult {
-        let total = 0
-        for (const row of input.Readings) {
-            total += row.wattsHour * this.getKWPrice(row.date) / 1000
-        }
+        input.Readings.forEach(x => this.countReading(x));
+
+        const totalBlueHC = priceBlueHC * this.kwhBlueHC
+        const totalBlueHP = priceBlueHP * this.kwhBlueHP
+        const totalWhiteHC = priceWhiteHC * this.kwhWhiteHC
+        const totalWhiteHP = priceWhiteHP * this.kwhWhiteHP
+        const totalRedHC = priceRedHC * this.kwhRedHC
+        const totalRedHP = priceRedHP * this.kwhRedHP
 
         return {
             Name: 'EDF tempo',
-            Cost: total + this.subPrice(input.Power),
-            Description: ''
+            Cost: totalBlueHC + totalBlueHP + totalWhiteHC + totalWhiteHP + totalRedHC + totalRedHP + this.subPrice(input.Power),
+            Description: `
+            * Abonnement ${input.Power}kVA: ${this.subPrice(input.Power)}
+            <br/>* Total HC bleues: ${this.kwhBlueHC.toFixed(0)}kWh x ${priceBlueHC}€ = ${totalBlueHC.toFixed(2)}€
+            <br/>* Total HP bleues: ${this.kwhBlueHP.toFixed(0)}kWh x ${priceBlueHP}€ = ${totalBlueHP.toFixed(2)}€
+            <br/>* Total HC blanches: ${this.kwhWhiteHC.toFixed(0)}kWh x ${priceWhiteHC}€ = ${totalWhiteHC.toFixed(2)}€
+            <br/>* Total HP blanches: ${this.kwhWhiteHP.toFixed(0)}kWh x ${priceWhiteHP}€ = ${totalWhiteHP.toFixed(2)}€
+            <br/>* Total HC rouges: ${this.kwhRedHC.toFixed(0)}kWh x ${priceRedHC}€ = ${totalRedHC.toFixed(2)}€
+            <br/>* Total HP rouges: ${this.kwhRedHP.toFixed(0)}kWh x ${priceRedHP}€ = ${totalRedHP.toFixed(2)}€
+            `
         }
     }
 
@@ -54,19 +80,27 @@ export class tempo {
         return NaN
     }
 
-    getKWPrice(date: Date): number {
-        const dateKey = date.toISOString().split('T')[0]
+    countReading(reading: Reading) {
+        const dateKey = reading.date.toISOString().split('T')[0]
 
-        const hours = date.getHours()
+        const hours = reading.date.getHours()
         const HC = hours < 6 || hours >= 22
+
+        const kwh = reading.wattsHour / 1000
 
         switch (tempoColorByDay[dateKey]) {
             case tempoColor.Blue:
-                return HC ? 0.1056 : 0.1369
+                if (HC) this.kwhBlueHC += kwh
+                else this.kwhBlueHP += kwh
+                break;
             case tempoColor.White:
-                return HC ? 0.1246 : 0.1654
+                if (HC) this.kwhWhiteHC += kwh
+                else this.kwhWhiteHP += kwh
+                break;
             case tempoColor.Red:
-                return HC ? 0.1328 : 0.7324
+                if (HC) this.kwhRedHC += kwh
+                else this.kwhRedHP += kwh
+                break;
         }
     }
 }
