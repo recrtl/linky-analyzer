@@ -67,9 +67,9 @@ export class tempo {
 | Jours Rouge HP               | ${this.kwhRedHP.toFixed(0)}kWh   | ${priceRedHP}€   | ${totalRedHP.toFixed(2)}€   |
 | Abonnement ${input.Power}kVA |                                  |                  | ${subscription.toFixed(2)}€ |
 | Total                        | ${kwhTotal.toFixed(0)}kWh        |                  | ${total.toFixed(2)}€        |
-<br/>
-_Les Heures creuses sont considérées de **22h à 6h**._
-_[Détail des tarifs.](https://particulier.edf.fr/content/dam/2-Actifs/Documents/Offres/Grille_prix_Tarif_Bleu.pdf)_
+
+* _Les Heures creuses sont considérées de **22h à 6h**._
+* _[Détail des tarifs.](https://particulier.edf.fr/content/dam/2-Actifs/Documents/Offres/Grille_prix_Tarif_Bleu.pdf)_
 `
         }
     }

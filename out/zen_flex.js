@@ -30,11 +30,11 @@ export class zen_flex {
 | Jours Sobriété HP            | ${this.kwhHighHP.toFixed(0)}kWh | ${priceHighHP}€ | ${totalHighHP.toFixed(2)}€  |
 | Abonnement ${input.Power}kVA |                                 |                 | ${subscription.toFixed(2)}€ |
 | Total                        | ${kwhTotal.toFixed(0)}kWh       |                 | ${total.toFixed(2)}€        |
-<br/>
-_Les Heures creuses sont considérées de **20h à 8h** et **13h à 18h**._
-_Les jours bonus ne sont pas simulés._
-_Les jours sobriété sont simulés à partir des jours rouges tempo._
-_[Détail des tarifs.](https://particulier.edf.fr/content/dam/2-Actifs/Documents/Offres/Grille-prix-zen-flex.pdf)_
+
+* _Les Heures creuses sont considérées de **20h à 8h** et **13h à 18h**._
+* _Les jours bonus ne sont pas simulés._
+* _Les jours sobriété sont simulés à partir des jours rouges tempo._
+* _[Détail des tarifs.](https://particulier.edf.fr/content/dam/2-Actifs/Documents/Offres/Grille-prix-zen-flex.pdf)_
 `
         };
     }

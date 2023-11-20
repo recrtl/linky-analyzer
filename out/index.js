@@ -54,7 +54,7 @@ function handleFiles() {
 }
 function displayResults(results) {
     let html = `
-        <table class="table">
+        <table class="table table-striped table-bordered">
         <thead>
             <tr>
                 <th data-field="name">Nom</th>
